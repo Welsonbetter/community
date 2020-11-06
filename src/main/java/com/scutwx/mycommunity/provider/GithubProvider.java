@@ -71,7 +71,7 @@ public class GithubProvider {
     public GithubUser getUser(String accessToken){
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url("https://api.github.com/user?access_token="+"0ce07c8dcbb3f92a9ff0c6c678bef90fc80f4efe")
+                    .url("https://api.github.com/user?access_token="+" b4c6c995e95f7c1c7224e70ab3864ea0113a4101")
                     .build();
             //正确token: e35ab40e1963ec458b33afb442d0ebbfd5e3f8e8     4a860f5ac5b0d56492ecb70ac485a2fd9b890b18
             //正确token: 0fc6eafc2063d20245ffe13fda3d3f7a1a6e75d3     06b1869954981741a4ad97c221f28ab94da7041c
