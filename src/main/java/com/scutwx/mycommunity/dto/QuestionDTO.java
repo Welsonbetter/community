@@ -1,9 +1,10 @@
-package com.scutwx.mycommunity.model;
+package com.scutwx.mycommunity.dto;
 
+import com.scutwx.mycommunity.model.User;
 import lombok.Data;
 
 @Data
-public class Question {
+public class QuestionDTO {
 
     private Long id;
     private String title;
@@ -15,6 +16,6 @@ public class Question {
     private Integer like_count;
     private String tag;
     private String description;
-
+    private User user;
 
 }
