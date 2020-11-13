@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <!--分页插件-->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/community"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <!--java类型解析器-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--在给定目录下src\main\java\com.scutwx.mycommunity.model生成相应的实体类-->
+        <javaModelGenerator targetPackage="com.scutwx.mycommunity.model" targetProject="src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--在给定目录下src\main\resources\mapper生成相应的mapper.xml-->
+        <sqlMapGenerator targetPackage="mapper"  targetProject="src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--在给定目录下src\main\java\com.scutwx.mycommunity.mapper生成相应的mapper层的接口文件-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.scutwx.mycommunity.mapper"  targetProject="src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--写出对应数据库中要操作的表的名字，指定要在model层生成的实体类的名字-->
+        <table tableName="user" domainObjectName="User" ></table>
+        <table tableName="question" domainObjectName="Question" ></table>
+        <table tableName="comment" domainObjectName="Comment" ></table>
+
+
+    </context>
+</generatorConfiguration>

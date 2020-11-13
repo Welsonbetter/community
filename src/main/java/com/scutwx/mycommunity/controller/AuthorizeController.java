@@ -5,6 +5,7 @@ import com.scutwx.mycommunity.dto.GithubUser;
 import com.scutwx.mycommunity.mapper.UserMapper;
 import com.scutwx.mycommunity.model.User;
 import com.scutwx.mycommunity.provider.GithubProvider;
+import com.scutwx.mycommunity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -32,6 +33,9 @@ public class AuthorizeController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state") String state,
@@ -39,40 +43,42 @@ public class AuthorizeController {
                            HttpServletResponse response
                            ){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
-        accessTokenDTO.setClient_id(clientId);
-        accessTokenDTO.setClient_secret(clientSecret);
+        accessTokenDTO.setClientId(clientId);
+        accessTokenDTO.setClientSecret(clientSecret);
         accessTokenDTO.setCode(code);
-        accessTokenDTO.setRedirect_uri(redirectUri);
+        accessTokenDTO.setRedirectUri(redirectUri);
         accessTokenDTO.setState(state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
         System.out.println(githubUser.getName());
         System.out.println(githubUser.getId());
 
-        if(githubUser != null){
+        if(githubUser != null && githubUser.getId() != null){
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(githubUser.getName());
-            user.setAccount_id(String.valueOf(githubUser.getId()));//String.valueOf可强转为String类型
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
-            //user.setAvatar_url(githubUser.getAvatar_url());
-            user.setAvatar_url(githubUser.getAvatar_url());
-            userMapper.insert(user);
+            user.setAccountId(String.valueOf(githubUser.getId()));//String.valueOf可强转为String类型
+            user.setAvatarUrl(githubUser.getAvatarUrl());
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token",token)); //手动添加cookie
 
-            //登录成功，写cookie和session
-//            request.getSession().setAttribute("user",githubUser);
-//            System.out.println("GithubUser不为空");
-//            System.out.println(githubUser);
             return "redirect:/";//此处若写成return "redirect:index";则页面跳转不成功
-
         }else{
             //登录失败，重新登录
             System.out.println("user是空的");
             return "redirect:index";
         }
-       // return "index";
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+
 }
