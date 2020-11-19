@@ -2,6 +2,8 @@ package com.scutwx.mycommunity.controller;
 
 import com.scutwx.mycommunity.dto.PaginationDTO;
 import com.scutwx.mycommunity.dto.QuestionDTO;
+import com.scutwx.mycommunity.dto.ResultDTO;
+import com.scutwx.mycommunity.exception.CustomizeErrorCode;
 import com.scutwx.mycommunity.mapper.QuestionMapper;
 import com.scutwx.mycommunity.mapper.UserMapper;
 import com.scutwx.mycommunity.model.Question;
@@ -34,7 +36,7 @@ public class IndexController {
         User user = (User) request.getSession().getAttribute("user");
 
         //调用service层方法查询数据，封装到PaginationDTO中
-        PaginationDTO pagination= questionService.list(page,size);
+        PaginationDTO pagination= questionService.list(user.getId(),page,size);
         model.addAttribute("pagination",pagination);//存储数据，使其能在页面被调用
         return "index";
     }

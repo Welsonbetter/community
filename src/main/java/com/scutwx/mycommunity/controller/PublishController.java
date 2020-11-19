@@ -1,5 +1,6 @@
 package com.scutwx.mycommunity.controller;
 
+import com.scutwx.mycommunity.cache.TagCache;
 import com.scutwx.mycommunity.dto.QuestionDTO;
 import com.scutwx.mycommunity.exception.CustomizeErrorCode;
 import com.scutwx.mycommunity.exception.CustomizeException;
@@ -42,11 +43,13 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());  //
         model.addAttribute("id",question.getId());
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -65,6 +68,7 @@ public class PublishController {
         model.addAttribute("title",title);  //用于将传入的数据回显在页面中
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);  //model将数据存储到request域中？还是session域？
+        model.addAttribute("tags", TagCache.get());
 
         if (StringUtils.isBlank(title)) {
             model.addAttribute("error", "标题不能为空");
@@ -81,6 +85,12 @@ public class PublishController {
 
         User user = (User) request.getSession().getAttribute("user");
 
+        String invalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
+            return "publish";
+        }
+
         if(user == null){
             model.addAttribute("error","用户未登录");
             return "publish";
@@ -96,6 +106,8 @@ public class PublishController {
         question.setId(id);
         questionService.createOrUpdate(question);
         return "redirect:/";
+      //  return "index";
     }
+
 
 }

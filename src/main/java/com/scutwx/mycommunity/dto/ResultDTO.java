@@ -33,7 +33,7 @@ public class ResultDTO<T> {
         return resultDTO;
     }
 
-    public static <T> ResultDTO okOf(T t) {
+    public static <T> ResultDTO okOf(T t) {  //注意含有泛型的方法的定义形式
         ResultDTO resultDTO = new ResultDTO();
         resultDTO.setCode(200);
         resultDTO.setMessage("请求成功");
