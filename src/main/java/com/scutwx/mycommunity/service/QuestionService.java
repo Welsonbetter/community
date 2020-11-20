@@ -2,6 +2,7 @@ package com.scutwx.mycommunity.service;
 
 import com.scutwx.mycommunity.dto.PaginationDTO;
 import com.scutwx.mycommunity.dto.QuestionDTO;
+import com.scutwx.mycommunity.dto.QuestionQueryDTO;
 import com.scutwx.mycommunity.exception.CustomizeErrorCode;
 import com.scutwx.mycommunity.exception.CustomizeException;
 import com.scutwx.mycommunity.mapper.QuestionExtMapper;
@@ -31,8 +32,62 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+
+    public PaginationDTO list(String search, Integer page, Integer size) {
+
+        if (StringUtils.isNotBlank(search)){
+            String[] tags = StringUtils.split(search, "");
+            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+        }
+
+        //新建PaginationDTO用以封装所查询到的相应页面的数据
+        PaginationDTO paginationDTO = new PaginationDTO();
+
+        Integer totalPage;
+
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
+
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+
+        if (page < 1) {
+            page = 1;
+        }
+//        if (page > paginationDTO.getTotalPage() && paginationDTO.getTotalPage()>0) {
+//            page = paginationDTO.getTotalPage();
+//        }
+
+        paginationDTO.setPagination(totalPage, page);//设置页码显示的相关规则
+        //偏移量 = 每页显示的数据条数 * （当前页面的页码 - 1）
+        Integer offset = size * (page - 1); //计算出偏移量
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
+        //创建一个list对象用来存储questionDTO对象
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+        for (Question question : questions) {
+            User user = userMapper.selectByPrimaryKey(question.getCreator()); //根据question数据查询相应的创建者user
+            QuestionDTO questionDTO = new QuestionDTO();
+            //从question拷贝数据到questionDTO对象，questionDTO是对question进行了一层包装的对象，多了个user属性
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user); //设置user
+            questionDTOList.add(questionDTO); //存储questionDTO对象
+        }
+        paginationDTO.setData(questionDTOList); //paginationDTO对象存储所查到的数据
+        return paginationDTO; //返回paginationDTO对象
+    }
+
+
     /**
      * 根据 page 和 size 查询相应相应的页面的数据
+     *
      * @param page  当前页面的页码
      * @param size  每页显示的数据条数
      * @return

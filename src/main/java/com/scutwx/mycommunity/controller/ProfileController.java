@@ -1,7 +1,6 @@
 package com.scutwx.mycommunity.controller;
 
 import com.scutwx.mycommunity.dto.PaginationDTO;
-import com.scutwx.mycommunity.mapper.UserMapper;
 import com.scutwx.mycommunity.model.User;
 import com.scutwx.mycommunity.service.NotificationService;
 import com.scutwx.mycommunity.service.QuestionService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller

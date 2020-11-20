@@ -40,40 +40,76 @@
                         <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
                 </div>
             </div>
+
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <!--如果条件为真，则显示该图标-->
                     <li th:if="${pagination.showFirstPage}">
-                        <a href="/?page=1" aria-label="Previous">
+                        <a th:href="@{/(page=1,searce=${search}})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;&lt;</span>
                         </a>
                     </li>
                     <!--如果条件为真，则显示该图标-->
                     <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{/(page=${pagination.page - 1})}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.page - 1},search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
                     <!--后面的 'active' : ''用来判断是否高亮相应页码-->
                     <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page}? 'active' : ''">
-                        <a th:href="@{/(page=${page})}" th:text="${page}">
+                        <a th:href="@{/(page=${page},search=${search})}" th:text="${page}">
 
                         </a>
                     </li>
                     <!--如果条件为真，则显示该图标-->
                     <li th:if="${pagination.showNext}">
-                        <a th:href="@{/(page=${pagination.page + 1})}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.page + 1},search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <!--如果条件为真，则显示该图标-->
                     <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.totalPage},search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>
                 </ul>
             </nav>
+
+            <!--<nav aria-label="Page navigation">-->
+                <!--<ul class="pagination">-->
+                    <!--&lt;!&ndash;如果条件为真，则显示该图标&ndash;&gt;-->
+                    <!--<li th:if="${pagination.showFirstPage}">-->
+                        <!--<a href="/?page=1" aria-label="Previous">-->
+                            <!--<span aria-hidden="true">&lt;&lt;</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash;如果条件为真，则显示该图标&ndash;&gt;-->
+                    <!--<li th:if="${pagination.showPrevious}">-->
+                        <!--<a th:href="@{/(page=${pagination.page - 1})}" aria-label="Previous">-->
+                            <!--<span aria-hidden="true">&lt;</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash;后面的 'active' : ''用来判断是否高亮相应页码&ndash;&gt;-->
+                    <!--<li th:each="page : ${pagination.pages}" th:class="${pagination.page == page}? 'active' : ''">-->
+                        <!--<a th:href="@{/(page=${page})}" th:text="${page}">-->
+
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash;如果条件为真，则显示该图标&ndash;&gt;-->
+                    <!--<li th:if="${pagination.showNext}">-->
+                        <!--<a th:href="@{/(page=${pagination.page + 1})}" aria-label="Previous">-->
+                            <!--<span aria-hidden="true">&gt;</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--&lt;!&ndash;如果条件为真，则显示该图标&ndash;&gt;-->
+                    <!--<li th:if="${pagination.showEndPage}">-->
+                        <!--<a th:href="@{/(page=${pagination.totalPage})}" aria-label="Previous">-->
+                            <!--<span aria-hidden="true">&gt;&gt;</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</nav>-->
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>热门话题</h3>
@@ -81,6 +117,6 @@
 
     </div>
 </div>
-
+<div th:insert="~{footer :: foot}"></div>
 </body>
 </html>

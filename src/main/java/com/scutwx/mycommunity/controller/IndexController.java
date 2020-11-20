@@ -30,14 +30,17 @@ public class IndexController {
     public String index(HttpServletRequest request,
                         Model model,
                         @RequestParam(name = "page",defaultValue = "1") Integer page, //第几页
-                        @RequestParam(name = "size",defaultValue = "2") Integer size  //每页多少个
+                        @RequestParam(name = "size",defaultValue = "2") Integer size,  //每页多少个
+                        String search
     ){
 
         User user = (User) request.getSession().getAttribute("user");
 
         //调用service层方法查询数据，封装到PaginationDTO中
-        PaginationDTO pagination= questionService.list(user.getId(),page,size);
+       // PaginationDTO pagination= questionService.list(user.getId(),page,size);
+        PaginationDTO pagination= questionService.list(search,page,size);
         model.addAttribute("pagination",pagination);//存储数据，使其能在页面被调用
+        model.addAttribute("search", search);
         return "index";
     }
 
